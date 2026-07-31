@@ -28,7 +28,7 @@ void mousePressed(){
         }
     }
 
-    if (mouseButton==LEFT) selectedNode = selectNode();
+    if (mouseButton==LEFT) {selectedNode = selectNode(); }
     if (frameSinceClick<=10){
         if (selectedNode==null){
             node n = new node(mouseX,mouseY,0,nodeTypeList.get(0));
@@ -56,12 +56,8 @@ void draw(){
     frameSinceClick++;
     background(255);
     for (node n:nodes){
-        int c = 0;
-        if (n.equals(selectedNode)){ 
-            c = color(0,0,255);
-            if (key(CONTROL)) c = color(0,255,255);
-        }
-        n.render(c,selectedNode==n);
+        
+        n.render(selectedNode==n);
     }
     if (mousePressed&mouseButton==LEFT&selectedNode!=null){
         selectedNode.posX = mouseX+rx;
@@ -81,5 +77,15 @@ void draw(){
 
     fill(0);
     textSize(20);
-    text("[A]rithmetic\n[C]onditional\n[F]unctional\n",50,50);
+    if (selectedNode!=null){
+        text(selectedNode.ntype.name,50,50);
+    }
+    text(
+        "[A]rithmetic\n"+
+        "[B]ranch\n"+
+        "[C]ontrol\n"+
+        "[T]ag\n"+
+        "[S]tring\n"
+        ,50,100);
+
 }

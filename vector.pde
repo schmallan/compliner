@@ -31,7 +31,23 @@ class spline{
 
     void calculateSpline(){
         float[] ray1 = angle2vector(node1.angle+offsetAngle,node1.controlDist);
+
+
         float[] ray2 = angle2vector(node2.angle-PI,node2.controlDist);
+
+        if (node1.ntype.isOperand){
+            float diffAng = atan2(node2.posY-node1.posY,node2.posX-node1.posX);
+            float rAng = (diffAng-node2.angle+2*PI)%(2*PI);
+            
+            if (rAng<PI){
+                rAng = PI/4;
+            } else {
+                rAng = -PI/4;
+            }
+            ray1 = new float[]{0,0};
+            ray2 = angle2vector(node2.angle-rAng,node2.controlDist);
+        }
+        
 
         for (int i = 0; i<=lineFidel; i++){
             float t = (float)i/lineFidel;
@@ -42,18 +58,24 @@ class spline{
         points[lineFidel] = new float[]{node2.posX,node2.posY};
     }
 
-    void renderSpline(int dotted){
+    void renderSpline(int dotted,int strokeWeight){
+        stroke(0);
+        if (node1.opindex==1) dotted=3;
         
         for (int i = 0; i<lineFidel; i++){
-            if (i%dotted==0) line(points[i][0],points[i][1],points[i+1][0],points[i+1][1]);
             
+            strokeWeight(strokeWeight);
+            if (i%dotted==0) line(points[i][0],points[i][1],points[i+1][0],points[i+1][1]);
+        
         }
-        int i=lineFidel/2;
+        if (!node1.ntype.isOperand) {
+                int i=lineFidel/2;
                 float ang = atan2(points[i+1][1]-points[i][1],points[i+1][0]-points[i][0]);
                 noStroke();
                 fill(0);
                 renderShape(shapeArrow,points[i+1][0],points[i+1][1],0.15,ang);
                 stroke(0);
+        }
             
     }
 }

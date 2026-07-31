@@ -5,10 +5,16 @@ int scale = 2;
 ArrayList<int[]> points = new ArrayList<int[]>();
 ArrayList<int[]> backpoints = new ArrayList<int[]>();
 
+int[][] tba = new int[][]{
+    {-10,0},{10,0},{-40,-50},{-240,-50},{-240,50},{-40,50},{10,0},{-10,0},{-20,10},{-30,0},{-20,-10},{-10,0},
+};
 
 int hl = 300;
 void setup(){
     windowResize(600,600);
+    for (int i = 0; i<tba.length; i++){
+        points.add(new int[]{tba[i][0]*scale+hl,tba[i][1]*scale+hl,});
+    }
 }
 
 int snapv = 10*scale;

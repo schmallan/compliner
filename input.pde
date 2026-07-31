@@ -14,41 +14,65 @@ boolean key(Integer c) {
   return r;
 }
 
-void keyPressed() {
-  keys.put(keyCode, true);
-  if (keyCode==BACKSPACE & selectedNode!=null){
-    
-    for (node n:nodes){
+void removeNode(node selectedNode){
+  for (node n:nodes){
         n.removeConnection(selectedNode);
     }
     selectedNode.removeConnection(selectedNode.mainConnection);
     selectedNode.removeConnection(selectedNode.sideConnection);
 
     nodes.remove(selectedNode);
+}
+
+void keyPressed() {
+  keys.put(keyCode, true);
+  if (keyCode==BACKSPACE & selectedNode!=null){
+    removeNode(selectedNode);
   }
   if (key==TAB & selectedNode!=null){
-    String family = selectedNode.nfamily;
+    String family = selectedNode.ntype.family;
 
     int n = nodeTypeList.indexOf(selectedNode.ntype);
     n = (n+1)%nodeTypeList.size();
-    while (!family.equals(nodeTypeList.get(n).family)){
-      n = (n+1)%nodeTypeList.size();
-    }
+    
+       // print((nodeTypeList.get(n).family));
+      while (!family.equals(nodeTypeList.get(n).family)){
+        n = (n+1)%nodeTypeList.size();
+      }
     selectedNode.morph(nodeTypeList.get(n));
   }
 
   nodeType ntype = null;
   switch (key){
     case 'a':
-      ntype = getNamedType("inc");
+      ntype = getNamedFamily("arithmetic");
       break;
-    case 'f':
-    ntype = getNamedType("nop");
+    case 'b':
+    ntype = getNamedFamily("jump");
       break;
     case 'c':
-    ntype = getNamedType("jl");
+    ntype = getNamedFamily("control");
       break;
-      
+    case 't':
+    ntype = getNamedFamily("tag");
+      break;
+    case 's':
+    ntype = getNamedFamily("arg");
+      break;
+    
+    
+    case '1':
+    ntype = getNamedFamily("byte");
+      break;
+    case '2':
+    ntype = getNamedFamily("word");
+      break;
+    case '3':
+    ntype = getNamedFamily("double");
+      break;
+    case '4':
+    ntype = getNamedFamily("quad");
+      break;
   }
 
   if (ntype!=null){
