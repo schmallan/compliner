@@ -1,27 +1,62 @@
-class node{
+import java.io.Serializable;
+
+class node implements Serializable {
+    //private static final long serialVersionUID = 1L;
+
+    //fields for serialization
+    Integer serialPrimaryBack;
+    ArrayList<Integer> serialBackNodes;
+    String serialInternalNodeTypeName;
+    Integer serialMainConnection;
+    Integer serialSideConnection;
+
+    void serialPrep(){
+        serialBackNodes = new ArrayList<Integer>();
+        serialPrimaryBack = nodes.indexOf(primaryBack);
+        serialInternalNodeTypeName = ntype.internalName;
+        serialMainConnection = nodes.indexOf(mainConnection);
+        serialSideConnection = nodes.indexOf(sideConnection);
+        for (node n : backNodes){
+            serialBackNodes.add(nodes.indexOf(n));
+        }
+    }
+    void serialRestore(){
+        backNodes = new ArrayList<node>();
+        if (serialPrimaryBack != -1) primaryBack = nodes.get(serialPrimaryBack);
+        ntype = getNamedType(serialInternalNodeTypeName);
+        nfamily = ntype.family;
+        if (serialMainConnection != -1){
+            mainConnection = nodes.get(serialMainConnection);
+            mainSpline = new spline(this,mainConnection);
+        }
+        if (serialSideConnection != -1){
+            sideConnection = nodes.get(serialSideConnection);
+            sideSpline = new spline(this,sideConnection);
+        }
+        for (int n : serialBackNodes){
+            backNodes.add(nodes.get(n));
+        }
+    }
+
+    int opcount = 0;
+    int opindex = 0;
+    String data;
     int posX;
     int posY;
     float angle;
-    int size = 25;
     float controlDist = 50;
 
-    String nfamily;
+    transient int size = 25;    
+    transient boolean valid = false;
+    transient String nfamily;
+    transient nodeType ntype;
+    transient node primaryBack = null;
+    transient ArrayList<node> backNodes;
+    transient node mainConnection = null;
+    transient node sideConnection = null;
     
-    nodeType ntype;
-
-    node primaryBack = null;
-    ArrayList<node> backNodes;
-    
-    node mainConnection;
-    node sideConnection;
-    
-    spline mainSpline;
-    spline sideSpline;
-
-    boolean valid = false;
-    int opcount = 0;
-
-    int opindex = 0;
+    transient spline mainSpline = null;
+    transient spline sideSpline = null;
 
     node(int x, int y, float a, nodeType n){
         backNodes = new ArrayList<node>();
@@ -29,6 +64,7 @@ class node{
         posY = y;
         angle = a;
         ntype = n;
+        data = ntype.defaultData;
     }
     void verify(){
         valid = true;
@@ -36,7 +72,8 @@ class node{
         numConnections += (mainConnection!=null) ? 1 : 0;
         numConnections += (sideConnection!=null) ? 1 : 0;
         if (numConnections!=ntype.branch) valid = false;
-        if (primaryBack==null & !(ntype.name.equals("label")||ntype.isOperand)) valid = false;
+        if (primaryBack==null & !(ntype.isHead)) valid = false;
+        if (primaryBack!=null & ntype.isHead & !ntype.name.equals("Label Definition")) valid = false;
         if (!ntype.isOperand & ntype.argNum!=opcount) valid = false;
     }
 
@@ -61,6 +98,7 @@ class node{
           //  mainSpline=null;
         //}
         verify();
+        data = ntype.defaultData;
     }
     void render(boolean select){
         int c = -1;
@@ -134,12 +172,12 @@ class node{
         if (mainConnection==null || ntype.branch<2){
             removeConnection(mainConnection);
             mainConnection = con; 
-            mainSpline = new spline(this,con,0);
+            mainSpline = new spline(this,con);
             updSpline();
         } else if (ntype.branch==2){
             removeConnection(sideConnection);
             sideConnection = con; 
-            sideSpline = new spline(this,con,0);
+            sideSpline = new spline(this,con);
             updSpline();
         }
         

@@ -1,20 +1,26 @@
 class nodeType{
+
     String name;
+    String internalName;
     int branch;
     int[][][] shape;
     int argNum;
     String family;
     boolean isOperand;
     int ncolor;
-
-    nodeType(String n, int b, int[][][] s, int a, String t, boolean o, color c){
+    String defaultData;
+    boolean isHead;
+    nodeType(String n,  String i, String d, int b, int[][][] s, int a, String t, boolean o, boolean h, color c){
         name = n;
+        internalName = i;
         branch = b;
         shape = s;
+        defaultData = d;
         argNum = a;
         family = t;
         isOperand = o;
         ncolor = c;
+        isHead = h;
     }
 }
 
@@ -65,15 +71,13 @@ int[] regColors = new int[]{
 
 nodeType getNamedType(String name){
     for (nodeType t : nodeTypeList){
-        print(t.name + ":" + name +"\n");
-        if (t.name.equals(name)) return t;
+        if (t.internalName.equals(name)) return t;
     }
     return null;
 }
 
 nodeType getNamedFamily(String name){
     for (nodeType t : nodeTypeList){
-        print(t.name + ":" + name +"\n");
         if (t.family.equals(name)) return t;
     }
     return null;
@@ -86,68 +90,86 @@ void initNodeTypes(){
     for (int i = 0; i<intRegs.length; i++){
         int c = regColors[i];
         nodeTypeList.add(new nodeType(
-        intRegs[i][0],1,shapeByte,1,"byte",true,c
+        "Byte Register","arg_reg_"+intRegs[i][0],intRegs[i][0],1,shapeByte,1,"byte",true,true,c
         ));
         nodeTypeList.add(new nodeType(
-        intRegs[i][1],1,shapeWord,1,"word",true,c
+        "Word Register","arg_reg_"+intRegs[i][1],intRegs[i][1],1,shapeWord,1,"word",true,true,c
         ));
         nodeTypeList.add(new nodeType(
-        intRegs[i][2],1,shapeDouble,1,"double",true,c
+        "Double Register","arg_reg_"+intRegs[i][2],intRegs[i][2],1,shapeDouble,1,"double",true,true,c
         ));
         nodeTypeList.add(new nodeType(
-        intRegs[i][3],1,shapeQuad,1,"quad",true,c
+        "Quad Register","arg_reg_"+intRegs[i][3],intRegs[i][3],1,shapeQuad,1,"quad",true,true,c
         ));
-        nodeTypeList.add(new nodeType(
-        ("tag"+i),1,shapeTagM,1,"tag",true,c
+       nodeTypeList.add(new nodeType(
+         "tag","arg_tag_"+i,("tag"+i),1,shapeTag,1,"tag",true,true,c
         ));
+            
+        
     }
     
     colorMode(RGB,255,255,255);
     
+        nodeTypeList.add(new nodeType(
+            "Custom Text","arg_text","Enter text here",1,shapeText,1,"arg",true,true,color(0,0,0)
+        ));nodeTypeList.add(new nodeType(
+            "Custom Number","arg_num","Enter number here",1,shapeNum,1,"arg",true,true,color(0,0,0)
+        ));
     nodeTypeList.add(new nodeType(
-        "nop",1,shapeNop,0,"control",false,color(0,0,0)
+        "No Operation","instr_nop","nop",1,shapeNop,0,"control",false,false,color(0,0,0)
     )); nodeTypeList.add(new nodeType(
-        "mov",1,shapeMov,2,"control",false,color(0,0,0)
+        "Move","instr_mov","mov",1,shapeMov,2,"control",false,false,color(0,0,0)
     )); nodeTypeList.add(new nodeType(
-        "label",1,shapeLabel,1,"control",false,color(0,0,0) //special
+        "Label Definition","prepr_label_def","label",1,shapeLabel,1,"control",false,true,color(0,0,0) 
     )); nodeTypeList.add(new nodeType(
-        "ret",0,shapeRet,0,"control",false,color(0,0,0)
+        "Return","instr_ret","ret",0,shapeRet,0,"control",false,false,color(0,0,0)
     )); nodeTypeList.add(new nodeType(
-        "call",1,shapeCall,1,"control",false,color(0,0,0)   //special
+        "Call Function","instr_call","call",1,shapeCall,1,"control",false,false,color(0,0,0) 
+    )); nodeTypeList.add(new nodeType(
+        "Stack Pop","instr_pop","pop",1,shapePop,1,"control",false,false,color(0,0,0) 
+    )); nodeTypeList.add(new nodeType(
+        "Stack Push","instr_push","push",1,shapePush,1,"control",false,false,color(0,0,0) 
     
+    
+    )); nodeTypeList.add(new nodeType(
+        "Import Function","prepr_extern","extern",0,shapeExtern,1,"preprocessor",false,true,color(0,0,0)   
+    )); nodeTypeList.add(new nodeType(
+        "Export Function","prepr_global","global",0,shapeGlobal,1,"preprocessor",false,true,color(0,0,0)   
+    
+    )); nodeTypeList.add(new nodeType(
+        "Define Byte(s)","prepr_db","db",0,shapeDb,2,"preprocessor",false,true,color(0,0,0)   
+    )); nodeTypeList.add(new nodeType(
+        "Define Word(s)","prepr_dw","dw",0,shapeDw,2,"preprocessor",false,true,color(0,0,0)   
+    )); nodeTypeList.add(new nodeType(
+        "Define Double(s)","prepr_dd","dd",0,shapeDd,2,"preprocessor",false,true,color(0,0,0)   
+    )); nodeTypeList.add(new nodeType(
+        "Define Quad(s)","prepr_dq","dq",0,shapeDq,2,"preprocessor",false,true,color(0,0,0)   
+
     )); nodeTypeList.add(new nodeType( 
-        "jl",2,shapeJl,2,"jump",false,color(0,0,0)
+        "Jump if <0","instr_jl","jl",2,shapeJl,2,"jump",false,false,color(0,0,0)
     )); nodeTypeList.add(new nodeType(
-        "jz",2,shapeJz,2,"jump",false,color(0,0,0)
+        "Jump if =0","instr_jz","jz",2,shapeJz,2,"jump",false,false,color(0,0,0)
     )); nodeTypeList.add(new nodeType(
-        "jng",2,shapeJng,2,"jump",false,color(0,0,0)
+        "Jump if <=0","instr_jng","jng",2,shapeJng,2,"jump",false,false,color(0,0,0)
     )); nodeTypeList.add(new nodeType(
-        "jg",2,shapeJg,2,"jump",false,color(0,0,0)
+        "Jump if >0","instr_jg","jg",2,shapeJg,2,"jump",false,false,color(0,0,0)
     )); nodeTypeList.add(new nodeType(
-        "jnz",2,shapeJnz,2,"jump",false,color(0,0,0)
+        "Jump if !0","instr_jnz","jnz",2,shapeJnz,2,"jump",false,false,color(0,0,0)
     )); nodeTypeList.add(new nodeType(
-        "jnl",2,shapeJnl,2,"jump",false,color(0,0,0)
-    )); nodeTypeList.add(new nodeType(
-        "jmp",2,shapeJmp,2,"jump",false,color(0,0,0)
+        "Jump if >=0","instr_jnl","jnl",2,shapeJnl,2,"jump",false,false,color(0,0,0)
 
     )); nodeTypeList.add(new nodeType(
-        "inc",1,shapeInc,1,"arithmetic",false,color(0,0,0)
+        "Increment","instr_inc","inc",1,shapeInc,1,"arithmetic",false,false,color(0,0,0)
     )); nodeTypeList.add(new nodeType(
-        "add",1,shapeAdd,2,"arithmetic",false,color(0,0,0)
+        "Add","instr_add","add",1,shapeAdd,2,"arithmetic",false,false,color(0,0,0)
     )); nodeTypeList.add(new nodeType(
-        "mul",1,shapeMul,2,"arithmetic",false,color(0,0,0)
+        "Multiply","instr_mul","mul",1,shapeMul,2,"arithmetic",false,false,color(0,0,0)
     )); nodeTypeList.add(new nodeType(
-        "dec",1,shapeDec,1,"arithmetic",false,color(0,0,0)
+        "Decrement","instr_dec","dec",1,shapeDec,1,"arithmetic",false,false,color(0,0,0)
     )); nodeTypeList.add(new nodeType(
-        "sub",1,shapeSub,2,"arithmetic",false,color(0,0,0)
+        "Subtract","instr_sub","sub",1,shapeSub,2,"arithmetic",false,false,color(0,0,0)
     )); nodeTypeList.add(new nodeType(
-        "div",1,shapeDiv,1,"arithmetic",false,color(0,0,0)
+        "Divide","instr_div","div",1,shapeDiv,1,"arithmetic",false,false,color(0,0,0)
     ));
-    nodeTypeList.add(new nodeType(
-        "string",1,shapeText,1,"arg",true,color(0,0,0)
-    ));nodeTypeList.add(new nodeType(
-        "number",1,shapeNum,1,"arg",true,color(0,0,0)
-    ));
-    
     
 }

@@ -24,10 +24,30 @@ void removeNode(node selectedNode){
     nodes.remove(selectedNode);
 }
 
-void keyPressed() {
+boolean isEnteringText = false;
+void keyPressed(){
+  if (key==ENTER){
+    isEnteringText=!isEnteringText;
+  }
+
+  if (isEnteringText){
+    if (selectedNode!=null){
+      String d = selectedNode.data;
+      if (key==BACKSPACE){
+        if (d.length()>0) selectedNode.data = d.substring(0,d.length()-1);
+      } 
+      if (key<127 & key>=32) {
+       
+        selectedNode.data += key;
+      }
+    }
+    return;
+  }
+
   keys.put(keyCode, true);
   if (keyCode==BACKSPACE & selectedNode!=null){
     removeNode(selectedNode);
+    selectedNode = null;
   }
   if (key==TAB & selectedNode!=null){
     String family = selectedNode.ntype.family;
@@ -35,7 +55,6 @@ void keyPressed() {
     int n = nodeTypeList.indexOf(selectedNode.ntype);
     n = (n+1)%nodeTypeList.size();
     
-       // print((nodeTypeList.get(n).family));
       while (!family.equals(nodeTypeList.get(n).family)){
         n = (n+1)%nodeTypeList.size();
       }
@@ -59,7 +78,15 @@ void keyPressed() {
     case 's':
     ntype = getNamedFamily("arg");
       break;
-    
+    case 'p':
+    ntype = getNamedFamily("preprocessor");
+      break;
+    case 'v':
+      graphSave();
+      break;
+    case 'l':
+      graphLoad();
+      break;
     
     case '1':
     ntype = getNamedFamily("byte");
@@ -73,6 +100,7 @@ void keyPressed() {
     case '4':
     ntype = getNamedFamily("quad");
       break;
+
   }
 
   if (ntype!=null){

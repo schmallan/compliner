@@ -1,6 +1,12 @@
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ArrayList; 
+import java.io.FileNotFoundException;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 int lineFidel = 25;
 
 ArrayList<node> nodes = new ArrayList<node>();
@@ -78,7 +84,7 @@ void draw(){
     fill(0);
     textSize(20);
     if (selectedNode!=null){
-        text(selectedNode.ntype.name,50,50);
+        text(selectedNode.ntype.name+"\n"+selectedNode.data+((isEnteringText)?"<":""),50,50);
     }
     text(
         "[A]rithmetic\n"+
@@ -87,5 +93,10 @@ void draw(){
         "[T]ag\n"+
         "[S]tring\n"
         ,50,100);
+    if (isEnteringText){
+        textSize(50);
+        text("ENTERING TEXT",200,100);
+    }
 
 }
+

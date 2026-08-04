@@ -20,17 +20,15 @@ class spline{
     float[][] points;
     node node1;
     node node2;
-    float offsetAngle;
-    spline(node n1, node n2, float offa){
+    spline(node n1, node n2){
         points = new float[lineFidel+1][2];
         node1 = n1;
         node2 = n2;
-        offsetAngle = offa;
         calculateSpline();
     }
 
     void calculateSpline(){
-        float[] ray1 = angle2vector(node1.angle+offsetAngle,node1.controlDist);
+        float[] ray1 = angle2vector(node1.angle,node1.controlDist);
 
 
         float[] ray2 = angle2vector(node2.angle-PI,node2.controlDist);
