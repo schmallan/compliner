@@ -32,6 +32,7 @@ void keyPressed(){
 
   if (isEnteringText){
     if (selectedNode!=null){
+      if (!selectedNode.ntype.family.equals("arg")) return;
       String d = selectedNode.data;
       if (key==BACKSPACE){
         if (d.length()>0) selectedNode.data = d.substring(0,d.length()-1);
@@ -39,6 +40,14 @@ void keyPressed(){
       if (key<127 & key>=32) {
        
         selectedNode.data += key;
+      }
+    } else {
+      if (key==BACKSPACE){
+        if (filepath.length()>0) filepath = filepath.substring(0,filepath.length()-1);
+      } 
+      if (key<127 & key>=32) {
+       
+        filepath += key;
       }
     }
     return;
@@ -62,6 +71,7 @@ void keyPressed(){
   }
 
   nodeType ntype = null;
+  String t;
   switch (key){
     case 'a':
       ntype = getNamedFamily("arithmetic");
@@ -75,30 +85,43 @@ void keyPressed(){
     case 't':
     ntype = getNamedFamily("tag");
       break;
-    case 's':
+    case 'e':
     ntype = getNamedFamily("arg");
       break;
     case 'p':
     ntype = getNamedFamily("preprocessor");
       break;
-    case 'v':
+    case 's':
       graphSave();
       break;
     case 'l':
       graphLoad();
       break;
+    case DELETE:
+      selectedNode = null;
+      nodes = new ArrayList<node>();
+      filepath = "";
+      break;
     
     case '1':
-    ntype = getNamedFamily("byte");
+    t = "byte";
+    t += (key(CONTROL)) ? "_d" : "";
+    ntype = getNamedFamily(t);
       break;
     case '2':
-    ntype = getNamedFamily("word");
+    t = "word";
+    t += (key(CONTROL)) ? "_d" : "";
+    ntype = getNamedFamily(t);
       break;
     case '3':
-    ntype = getNamedFamily("double");
+    t = "double";
+    t += (key(CONTROL)) ? "_d" : "";
+    ntype = getNamedFamily(t);
       break;
     case '4':
-    ntype = getNamedFamily("quad");
+    t = "quad";
+    t += (key(CONTROL)) ? "_d" : "";
+    ntype = getNamedFamily(t);
       break;
 
   }

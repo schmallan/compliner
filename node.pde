@@ -3,54 +3,18 @@ import java.io.Serializable;
 class node implements Serializable {
     //private static final long serialVersionUID = 1L;
 
-    //fields for serialization
-    Integer serialPrimaryBack;
-    ArrayList<Integer> serialBackNodes;
-    String serialInternalNodeTypeName;
-    Integer serialMainConnection;
-    Integer serialSideConnection;
-
-    void serialPrep(){
-        serialBackNodes = new ArrayList<Integer>();
-        serialPrimaryBack = nodes.indexOf(primaryBack);
-        serialInternalNodeTypeName = ntype.internalName;
-        serialMainConnection = nodes.indexOf(mainConnection);
-        serialSideConnection = nodes.indexOf(sideConnection);
-        for (node n : backNodes){
-            serialBackNodes.add(nodes.indexOf(n));
-        }
-    }
-    void serialRestore(){
-        backNodes = new ArrayList<node>();
-        if (serialPrimaryBack != -1) primaryBack = nodes.get(serialPrimaryBack);
-        ntype = getNamedType(serialInternalNodeTypeName);
-        nfamily = ntype.family;
-        if (serialMainConnection != -1){
-            mainConnection = nodes.get(serialMainConnection);
-            mainSpline = new spline(this,mainConnection);
-        }
-        if (serialSideConnection != -1){
-            sideConnection = nodes.get(serialSideConnection);
-            sideSpline = new spline(this,sideConnection);
-        }
-        for (int n : serialBackNodes){
-            backNodes.add(nodes.get(n));
-        }
-    }
-
-    int opcount = 0;
     int opindex = 0;
     String data;
     int posX;
     int posY;
     float angle;
     float controlDist = 50;
+    node primaryBack = null;
+    nodeType ntype;
 
+    transient int opcount = 0;
     transient int size = 25;    
     transient boolean valid = false;
-    transient String nfamily;
-    transient nodeType ntype;
-    transient node primaryBack = null;
     transient ArrayList<node> backNodes;
     transient node mainConnection = null;
     transient node sideConnection = null;
@@ -87,7 +51,6 @@ class node implements Serializable {
         };
 
         ntype = newt;
-        nfamily = newt.family;
         if (ntype.branch<2){
             sideConnection=null;
             sideSpline=null;

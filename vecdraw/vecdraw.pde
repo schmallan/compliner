@@ -1,19 +1,19 @@
 
 import java.util.ArrayList; 
 
-int scale = 2;
+int scale = 1;
 ArrayList<int[]> points = new ArrayList<int[]>();
 ArrayList<int[]> backpoints = new ArrayList<int[]>();
 
 int[][] tba = new int[][]{
-    
+    {0,0},{0,50},{10,80},{40,90},{90,90},{90,40},{80,10},{50,0},
 };
 
 int hl = 300;
 void setup(){
     windowResize(600,600);
     for (int i = 0; i<tba.length; i++){
-        points.add(new int[]{tba[i][0]*scale*2+hl,tba[i][1]*scale*2+hl,});
+        points.add(new int[]{tba[i][0]*scale*1+hl,tba[i][1]*scale*1+hl,});
     }
 }
 

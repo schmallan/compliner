@@ -101,6 +101,20 @@ void initNodeTypes(){
         nodeTypeList.add(new nodeType(
         "Quad Register","arg_reg_"+intRegs[i][3],intRegs[i][3],1,shapeQuad,1,"quad",true,true,c
         ));
+
+         nodeTypeList.add(new nodeType(
+        "Deref. Byte Register","arg_reg_d_"+intRegs[i][0],"["+intRegs[i][0]+"]",1,shapeByteD,1,"byte_d",true,true,c
+        ));
+        nodeTypeList.add(new nodeType(
+        "Deref. Word Register","arg_reg_d_"+intRegs[i][1],"["+intRegs[i][1]+"]",1,shapeWordD,1,"word_d",true,true,c
+        ));
+        nodeTypeList.add(new nodeType(
+        "Deref. Double Register","arg_reg_d_"+intRegs[i][2],"["+intRegs[i][2]+"]",1,shapeDoubleD,1,"double_d",true,true,c
+        ));
+        nodeTypeList.add(new nodeType(
+        "Deref. Quad Register","arg_reg_d_"+intRegs[i][3],"["+intRegs[i][3]+"]",1,shapeQuadD,1,"quad_d",true,true,c
+        ));
+        
        nodeTypeList.add(new nodeType(
          "tag","arg_tag_"+i,("tag"+i),1,shapeTag,1,"tag",true,true,c
         ));
@@ -111,10 +125,11 @@ void initNodeTypes(){
     colorMode(RGB,255,255,255);
     
         nodeTypeList.add(new nodeType(
-            "Custom Text","arg_text","Enter text here",1,shapeText,1,"arg",true,true,color(0,0,0)
+            "Custom Text","arg_text","",1,shapeText,1,"arg",true,true,color(0,0,0)
         ));nodeTypeList.add(new nodeType(
-            "Custom Number","arg_num","Enter number here",1,shapeNum,1,"arg",true,true,color(0,0,0)
+            "Custom Number","arg_num","",1,shapeNum,1,"arg",true,true,color(0,0,0)
         ));
+
     nodeTypeList.add(new nodeType(
         "No Operation","instr_nop","nop",1,shapeNop,0,"control",false,false,color(0,0,0)
     )); nodeTypeList.add(new nodeType(
